@@ -37,9 +37,15 @@ window.addEventListener('DOMContentLoaded', fillTodoList);
 
 function addCloseBtn(li) {
     let span = document.createElement("span");
-    let txt = document.createTextNode('\u00D7');
+    let span2 = document.createElement("span");
+    // let txt = document.createTextNode('\u00D7');
+    let txt = document.createTextNode("delete");
+    let txt2 = document.createTextNode("update");
     span.className = "close";
     span.appendChild(txt);
+    span2.className = "update";
+    span2.appendChild(txt2);
+    li.appendChild(span2);
     li.appendChild(span);
 
 }
