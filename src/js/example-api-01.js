@@ -1,62 +1,82 @@
 const BASE_URL = "https://65f2d1ae105614e6549efd32.mockapi.io/todos";
-
-//GET ALL TODOS
-const getTodos = () => {
-    return fetch(BASE_URL).then((res) => res.json());
-}
-
-//ADD or POST
-const addTodo = (newTodo) => {
-    return fetch(BASE_URL, {
-        method: "POST",
-        headers: {"Content-Type" : "application/json", },
-        body: JSON.stringify(newTodo),
-    });
-}
-
-
 const addBtnEl = document.getElementById("addBtn");
 const myUL = document.getElementById("myUL");
 const myInput = document.getElementById("myInput");
 
-//CREATE LIST
-function createLI (text, isDone=false, id) {
-    let li = document.createElement("li");
+// Function to fetch all todos
+const getTodos = async () => {
+    try {
+        const response = await fetch(BASE_URL);
+        if (!response.ok) {
+            throw new Error('Failed to fetch todos');
+        }
+        return await response.json();
+    } catch (error) {
+        console.error(error);
+    }
+};
+
+// Function to add a todo
+const addTodo = async (newTodo) => {
+    try {
+        const response = await fetch(BASE_URL, {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify(newTodo),
+        });
+        if (!response.ok) {
+            throw new Error('Failed to add todo');
+        }
+    } catch (error) {
+        console.error(error);
+    }
+};
+
+// Function to create a list item
+function createLI(text, isDone = false, id) {
+    const li = document.createElement("li");
     li.innerText = text;
     myUL.appendChild(li);
+    addUpdateCheckbox(li);
     addCloseBtn(li);
 }
 
-function fillTodoList() {
-    getTodos().then((todos) => {
-        todos.forEach(({text, isDone, id}) => createLI(text, isDone, id));
-    });
+// Function to fill the todo list
+async function fillTodoList() {
+    const todos = await getTodos();
+    if (todos) {
+        todos.forEach(({ text, isDone, id }) => createLI(text, isDone, id));
+    }
 }
 
+// Event listener for DOMContentLoaded
 window.addEventListener('DOMContentLoaded', fillTodoList);
 
+// Function to add close button
 function addCloseBtn(li) {
-    let span = document.createElement("span");
-    let span2 = document.createElement("span");
-    // let txt = document.createTextNode('\u00D7');
-    let txt = document.createTextNode("delete");
-    let txt2 = document.createTextNode("update");
+    const span = document.createElement("span");
+    const txt = document.createTextNode("delete");
     span.className = "close";
     span.appendChild(txt);
-    span2.className = "update";
-    span2.appendChild(txt2);
-    li.appendChild(span2);
     li.appendChild(span);
-
 }
 
+// Function to add update checkbox
+function addUpdateCheckbox(li) {
+    const checkbox = document.createElement("input");
+    checkbox.type = "checkbox";
+    checkbox.className = "update";
+    li.appendChild(checkbox);
+}
+
+// Event listener for add button click
 addBtnEl.addEventListener('click', () => {
-    let todo = myInput.value.trim();
-    if (todo ==='') {
-        alert("Please enter todo");
+    const todo = myInput.value.trim();
+    if (todo === '') {
+        alert("Please enter a todo");
         return;
     }
     createLI(todo);
-    let newTodo = {"text": `${todo}`, "isDone": false,};
+    const newTodo = { "text": `${todo}`, "isDone": false };
     addTodo(newTodo);
-})
+});
