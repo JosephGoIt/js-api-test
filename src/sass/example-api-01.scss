@@ -2,15 +2,36 @@
 ul {
     list-style-type: none;
     margin-left: 0;
-    padding-right: 0;
+    padding-left: 0;
+    border: 2px solid blue; /* Add a border around the entire list */
+    background-color: lightblue; /* Set a background color for the list */
+    width: 25%;
   }
 
 li {
     display: flex;
-    justify-content: space-between;
+    justify-content:flex-start;
     align-items: center;
+    margin: 5px; /* Add some spacing between list items */
+    background-color: lightyellow; /* Set a background color for each list item */
 }
 
-li .update, li .close {
+li .update {
+    margin-left: 0%;
+    width: min-content;
+}
+
+li .close {
     margin-left: auto;
+}
+
+.header {
+    width: 25%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+h2 {
+    text-align: center;
 }

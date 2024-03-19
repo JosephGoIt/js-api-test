@@ -35,9 +35,10 @@ const addTodo = async (newTodo) => {
 // Function to create a list item
 function createLI(text, isDone = false, id) {
     const li = document.createElement("li");
-    li.innerText = text;
+    // li.innerText = "";
     myUL.appendChild(li);
-    addUpdateCheckbox(li);
+    addUpdateCheckbox(li, text, isDone);
+    addText(li , text);
     addCloseBtn(li);
 }
 
@@ -62,11 +63,21 @@ function addCloseBtn(li) {
 }
 
 // Function to add update checkbox
-function addUpdateCheckbox(li) {
+function addUpdateCheckbox(li, text, isDone) {
     const checkbox = document.createElement("input");
     checkbox.type = "checkbox";
     checkbox.className = "update";
+    // checkbox.innerText = text;
     li.appendChild(checkbox);
+}
+
+// Function to add text
+function addText(li, text) {
+    const span = document.createElement("span");
+    const txt = document.createTextNode(text);
+    span.className = "text";
+    span.appendChild(txt);
+    li.appendChild(span);
 }
 
 // Event listener for add button click
