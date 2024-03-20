@@ -32,10 +32,24 @@ const addTodo = async (newTodo) => {
     }
 };
 
+// Function to delete a todo
+const deleteTodo = async (todoId) => {
+    try {
+        const response = await fetch(`${BASE_URL}/${todoId}`, {
+            method: "DELETE"
+        });
+        if (!response.ok) {
+            throw new Error('Failed to delete todo');
+        }
+    } catch (error) {
+        console.error(error);
+    }
+};
+
 // Function to create a list item
 function createLI(text, isDone = false, id) {
     const li = document.createElement("li");
-    // li.innerText = "";
+    li.id = id; //assigning li's id same as todo's id
     myUL.appendChild(li);
     addUpdateCheckbox(li, text, isDone);
     addText(li , text);
@@ -60,6 +74,19 @@ function addCloseBtn(li) {
     span.className = "close";
     span.appendChild(txt);
     li.appendChild(span);
+
+    // Event listener for close button click... I changed my mind would implement event delegation instead
+    // span.addEventListener('click', () => {
+    //     const liId = getLiId(span);
+    //     console.log("LI ID:", liId);
+    //     // Perform further actions with the liId if needed
+    // });
+}
+
+// Function to get the id of the corresponding li element when its close button is clicked
+function getLiId(span) {
+    const li = span.parentNode;
+    return li.id; // Assuming the id of li element is set as todo's id
 }
 
 // Function to add update checkbox
@@ -90,4 +117,18 @@ addBtnEl.addEventListener('click', () => {
     createLI(todo);
     const newTodo = { "text": `${todo}`, "isDone": false };
     addTodo(newTodo);
+});
+
+// Event listener for close button clicks using event delegation
+document.addEventListener('click', async (event) => {
+    const target = event.target;
+    if (target.classList.contains('close')) {
+        // alert(target.parentNode.className)
+        const liId = getLiId(target);
+        // alert(liId);
+        // Perform further actions with the liId if needed
+        await deleteTodo(liId);
+        // Remove the corresponding li element from the DOM
+        target.parentNode.remove();
+    }
 });
