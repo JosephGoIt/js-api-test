@@ -46,6 +46,22 @@ const deleteTodo = async (todoId) => {
     }
 };
 
+// Function to update a todo
+const updateTodo = async (todoId, updatedTodo) => {
+    try {
+        const response = await fetch(`${BASE_URL}/${todoId}`, {
+            method: "PUT",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify(updatedTodo),
+        });
+        if (!response.ok) {
+            throw new Error('Failed to update todo');
+        }
+    } catch (error) {
+        console.error(error);
+    }
+};
+
 // Function to create a list item
 function createLI(text, isDone = false, id) {
     const li = document.createElement("li");
@@ -75,7 +91,7 @@ function addCloseBtn(li) {
     span.appendChild(txt);
     li.appendChild(span);
 
-    // Event listener for close button click... I changed my mind would implement event delegation instead
+    // Event listener for close button click... meron nga palang event delegation
     // span.addEventListener('click', () => {
     //     const liId = getLiId(span);
     //     console.log("LI ID:", liId);
@@ -94,7 +110,7 @@ function addUpdateCheckbox(li, text, isDone) {
     const checkbox = document.createElement("input");
     checkbox.type = "checkbox";
     checkbox.className = "update";
-    // checkbox.innerText = text;
+    checkbox.checked = isDone;
     li.appendChild(checkbox);
 }
 
@@ -130,5 +146,16 @@ document.addEventListener('click', async (event) => {
         await deleteTodo(liId);
         // Remove the corresponding li element from the DOM
         target.parentNode.remove();
+    }
+});
+
+// Event listener for checkbox clicks using event delegation
+myUL.addEventListener('change', async (event) => {
+    const target = event.target;
+    if (target.classList.contains('update')) {
+        const liId = getLiId(target);
+        const isChecked = target.checked;
+        console.log("Updating LI with ID:", liId, "Is Done:", isChecked);
+        await updateTodo(liId, { isDone: isChecked });
     }
 });
