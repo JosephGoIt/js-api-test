@@ -63,7 +63,7 @@ const updateTodo = async (todoId, updatedTodo) => {
 };
 
 // Function to create a list item
-function createLI(text, isDone = false, id) {
+function createLI(text, isDone, id) {
     const li = document.createElement("li");
     li.id = id; //assigning li's id same as todo's id
     myUL.appendChild(li);
@@ -75,6 +75,8 @@ function createLI(text, isDone = false, id) {
 // Function to fill the todo list
 async function fillTodoList() {
     const todos = await getTodos();
+    console.log(todos);
+    alert("test");
     if (todos) {
         todos.forEach(({ text, isDone, id }) => createLI(text, isDone, id));
     }
@@ -124,15 +126,20 @@ function addText(li, text) {
 }
 
 // Event listener for add button click
-addBtnEl.addEventListener('click', () => {
+addBtnEl.addEventListener('click', async () => {
     const todo = myInput.value.trim();
     if (todo === '') {
         alert("Please enter a todo");
         return;
     }
-    createLI(todo);
     const newTodo = { "text": `${todo}`, "isDone": false };
-    addTodo(newTodo);
+    await addTodo(newTodo); //await for new todo to be added
+    // Get the ID of the newly added todo
+    const newTodoId = await getNewTodoId();
+    console.log("ID of the new todo:");
+    
+    createLI(todo, false, newTodoId);
+
 });
 
 // Event listener for close button clicks using event delegation
@@ -159,3 +166,20 @@ myUL.addEventListener('change', async (event) => {
         await updateTodo(liId, { isDone: isChecked });
     }
 });
+
+// Function to get the ID of the newly added todo
+async function getNewTodoId() {
+    try {
+        const response = await fetch(BASE_URL);
+        if (!response.ok) {
+            throw new Error('Failed to fetch todos');
+        }
+        const todos = await response.json();
+        // Assuming the new todo has the highest ID
+        console.log(todos);
+        alert(todos);
+        return Math.max(...todos.map(todo => parseInt(todo.id)));
+    } catch (error) {
+        console.error(error);
+    }
+}
