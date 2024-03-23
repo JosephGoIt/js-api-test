@@ -134,6 +134,7 @@ addBtnEl.addEventListener('click', async () => {
     }
     const newTodo = { "text": `${todo}`, "isDone": false };
     await addTodo(newTodo); //await for new todo to be added
+    alert("test");
     // Get the ID of the newly added todo
     const newTodoId = await getNewTodoId();
     console.log("ID of the new todo:");
