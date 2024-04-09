@@ -68,6 +68,7 @@ const main = async () => {
     const trendingMoviesData = await fetchTrendingMovies();
     const galleryItems = createGalleryItems(trendingMoviesData);
     renderGallery(galleryItems);
+    console.log(galleryItems);
     initializeLightbox();
 };
 
