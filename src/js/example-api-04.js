@@ -26,6 +26,7 @@ const fetchTrendingMovies = async () => {
 // Function to create gallery items from fetched data
 const createGalleryItems = (data) => {
     const galleryItems = [];
+    console.log(data);
 
     data.results.forEach(item => {
         const galleryItem = document.createElement('li');
